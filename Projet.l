@@ -1,4 +1,7 @@
 %{
+    #include "syn.tab.h"
+    extern int nb_ligne ;
+    extern int  nb_colonne ;
     #include <stdio.h>
     #include <stdlib.h>  // Pour strtol()
     int nb_ligne = 1;
@@ -30,18 +33,18 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 
 
 
-"MainPrgm"      { printf("Mot-cle detecte : MainPrgm\n"); }
-"Var"           { printf("Mot-cle detecte : Var\n"); }
-"BeginPg"       { printf("Mot-cle detecte : BeginPg\n"); }
-"EndPg"         { printf("Mot-cle detecte : EndPg\n"); }
-"let"           { printf("Mot-cle detecte : let\n"); }
-"@define"       { printf("Mot-cle detecte : @define\n"); }
-"Const"         { printf("Mot-cle detecte : Const\n"); }
-"input"         { printf("Mot-cle detecte : input\n"); }
-"output"        { printf("Mot-cle detecte : output\n"); }
+"MainPrgm"      { printf("Mot-cle detecte : MainPrgm\n"); nb_colonne += yyleng; return MAINPRGM; }
+"Var"           { printf("Mot-cle detecte : Var\n");nb_colonne += yyleng; return VAR; }
+"BeginPg"       { printf("Mot-cle detecte : BeginPg\n");nb_colonne += yyleng; return BEGINPG; }
+"EndPg"         { printf("Mot-cle detecte : EndPg\n"); nb_colonne += yyleng; return ENDPG; } 
+"let"           { printf("Mot-cle detecte : let\n");nb_colonne += yyleng;  return LET; }
+"@define"       { printf("Mot-cle detecte : @define\n"); nb_colonne += yyleng; return ATDEF; }
+"Const"         { printf("Mot-cle detecte : Const\n");nb_colonne += yyleng; return CONST; }
+"input"         { printf("Mot-cle detecte : input\n"); nb_colonne += yyleng; return INPUT; }
+"output"        { printf("Mot-cle detecte : output\n");nb_colonne += yyleng;  return OUTPUT; }
 
-"Int"       { printf("Type Int detecte : %s\n", yytext); nb_colonne += yyleng; }
-"Float"     { printf("Type Float detecte : %s\n", yytext); nb_colonne += yyleng; }
+"Int"       { printf("Type Int detecte : %s\n", yytext); nb_colonne += yyleng; return INT; }
+"Float"     { printf("Type Float detecte : %s\n", yytext); nb_colonne += yyleng; return TYPEFLOAT; }
 
 {chiffre}+  { 
                 yylval = strtol(yytext, NULL, 10); /* conversion de yytext en entier : yytext → Contient la chaîne à convertir.
@@ -52,6 +55,7 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                 else 
                    printf("Entier : %s\n", yytext);
                 nb_colonne += yyleng;
+                return ENTIER;
             }
 
 {entier_signe} { 
@@ -61,22 +65,25 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                     else 
                         printf("Entier : %s\n", yytext);
                     nb_colonne += yyleng;
+                    return ENTIER;
                 } 
 
 [+-]{chiffre}+ { 
     afficher_erreur("Syntaxe invalide", yytext, "Un entier signe doit etre entre parentheses");
     nb_colonne += yyleng;
+     return ENTIER;
 }
 [+-]{chiffre}+.{chiffre}+ { 
     afficher_erreur("Syntaxe invalide", yytext, "Un flottant signe doit etre entre parentheses");
     nb_colonne += yyleng;
+    return ENTIER;
 }
 
-{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng; }
+{flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng; return FLOAT; }
 
-{flottant_signe} { printf("float signe %s\n", yytext);nb_colonne += yyleng; }
+{flottant_signe} { printf("float signe %s\n", yytext);nb_colonne += yyleng; return FLOAT;  }
  
-{lettre}    { printf("Lettre: %s\n", yytext);nb_colonne += yyleng; }
+{lettre}    { printf("Lettre: %s\n", yytext);nb_colonne += yyleng; return LETTRE }
 
 "if"|"then"|"else"|"do"|"while"|"for"|"from"|"to"|"step" { printf("Mot-cle : %s\n", yytext); nb_colonne += yyleng;}
 
@@ -99,29 +106,40 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                        nb_colonne += yyleng;
                       }
 
-[+\-*/]     { printf("Operateur arithemetique : %s\n", yytext); nb_colonne += yyleng;}
-"AND"|"OR"    { printf("Operateur logique : %s\n", yytext);nb_colonne += yyleng; }
-"!"           { printf("Operateur NOT : %s\n", yytext); nb_colonne += yyleng;}
-"=="|"!="|"<="|">="|"<"|">"  { printf("Operateur de comparaison : %s\n", yytext); nb_colonne += yyleng;}
+"+"   { printf("Operateur arithmetique : %s\n", yytext);nb_colonne += yyleng; return PLUS; }
+"-"   { printf("Operateur arithmetique : %s\n", yytext);nb_colonne += yyleng; return MINUS; }
+"*"   { printf("Operateur arithmetique : %s\n", yytext);nb_colonne += yyleng; return TIMES; }
+"/"   { printf("Operateur arithmetique : %s\n", yytext);nb_colonne += yyleng; return DIV; }
 
-"{"         { printf("Ouverture de bloc\n"); }
-"}"         { printf("Fermeture de bloc\n"); }
-"["         { printf("Crochet ouvrant\n"); }
-"]"         { printf("Crochet fermant \n"); }
-"("         { printf("Parenthese ouvrant \n"); }
-")"         { printf("Parenthese fermant \n"); }
+"AND" { printf("Operateur logique : %s\n", yytext);nb_colonne += yyleng; return AND; }
+"OR"  { printf("Operateur logique : %s\n", yytext);nb_colonne += yyleng; return OR; }
+"!"   { printf("Operateur NOT : %s\n", yytext); nb_colonne += yyleng; return NOT; }
 
-";"         { printf("Point virgule\n"); }
-":"         { printf("Declaration\n"); }
-","         { printf("Virgule\n"); }
-"\'"        { printf("Guillemets\n"); }
-":="        { printf("Affectation\n"); }
-"="        { printf("Egal\n"); }
+"=="  { printf("Operateur de comparaison : %s\n", yytext);nb_colonne += yyleng; return EQ; }
+"!="  { printf("Operateur de comparaison : %s\n", yytext);nb_colonne += yyleng; return NEQ; }
+"<="  { printf("Operateur de comparaison : %s\n", yytext);nb_colonne += yyleng; return IE; }
+">="  { printf("Operateur de comparaison : %s\n", yytext);nb_colonne += yyleng; return SE; }
+"<"   { printf("Operateur de comparaison : %s\n", yytext);nb_colonne += yyleng; return I; }
+">"   { printf("Operateur de comparaison : %s\n", yytext);nb_colonne += yyleng; return S; }
+
+"{"   { printf("Ouverture de bloc\n");nb_colonne += yyleng; return OUVEREBLOC; }
+"}"   { printf("Fermeture de bloc\n");nb_colonne += yyleng; return FERMETBLOC; }
+"["   { printf("Crochet ouvrant\n");nb_colonne += yyleng; return CROCHETOUVERT; }
+"]"   { printf("Crochet fermant\n"); nb_colonne += yyleng; return  CROCHETFERME; }
+"("   { printf("Parenthese ouvrante\n"); nb_colonne += yyleng; return PARENTHESEOUVERT; }
+")"   { printf("Parenthese fermante\n"); nb_colonne += yyleng; return  PARENTHESEFERME; }
+
+";"   { printf("Point virgule\n");nb_colonne += yyleng; return PVG; }
+":"   { printf("Deux points\n"); nb_colonne += yyleng; return DEUXPOINT; }
+","   { printf("Virgule\n");nb_colonne += yyleng;  return VRG; }
+"\'"  { printf("Guillemets\n");nb_colonne += yyleng; return GUILLEMET; }
+"="   { printf("Egal\n"); nb_colonne += yyleng; return EGAL; }
+":="  { printf("Affectation\n"); nb_colonne += yyleng; return AFFECTATION }
 
 [ \t]+      {nb_colonne += yyleng;}
 \n          { nb_ligne++,nb_colonne = 1; }
 .           { afficher_erreur("Erreur lexicale", yytext, "Caractere inconnu"); 
-              nb_colonne += yyleng;
+              nb_colonne += yyleng; return ERREUR; 
             }
 
 %%
