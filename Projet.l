@@ -1,12 +1,11 @@
 %{
-    #include "syn.tab.h"
     extern int nb_ligne ;
     extern int  nb_colonne ;
     #include <stdio.h>
     #include <stdlib.h>  // Pour strtol()
     int nb_ligne = 1;
     int nb_colonne = 1;
-    long yylval; // Déclaration de yylval
+  
 
     void afficher_erreur(const char *type, const char *entite, const char *message) {
         printf("ERREUR : %s a la ligne %d, colonne %d : %s (%s)\n", 
