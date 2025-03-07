@@ -1,3 +1,6 @@
 flex Projet.l 
-gcc lex.yy.c -lfl -o AnaLexProjet
-AnaLexProjet.exe<Projet.txt
+bison -d Projet.y
+gcc lex.yy.c Projet.tab.c -lfl -ly -o compiler
+compiler.exe<Projet.txt
+
+

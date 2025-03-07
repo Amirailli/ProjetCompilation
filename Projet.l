@@ -1,12 +1,10 @@
 %{
-    #include "syn.tab.h"
+    #include "Projet.tab.h"
     extern int nb_ligne ;
     extern int  nb_colonne ;
     #include <stdio.h>
     #include <stdlib.h>  // Pour strtol()
-    int nb_ligne = 1;
-    int nb_colonne = 1;
-    long yylval; // Déclaration de yylval
+    extern YYSTYPE yylval; 
 
     void afficher_erreur(const char *type, const char *entite, const char *message) {
         printf("ERREUR : %s a la ligne %d, colonne %d : %s (%s)\n", 
@@ -65,25 +63,25 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                     else 
                         printf("Entier : %s\n", yytext);
                     nb_colonne += yyleng;
-                    return ENTIER;
+                    return ENTIERSIGNE;
                 } 
 
 [+-]{chiffre}+ { 
     afficher_erreur("Syntaxe invalide", yytext, "Un entier signe doit etre entre parentheses");
     nb_colonne += yyleng;
-     return ENTIER;
+     return ENTIERERROR;
 }
 [+-]{chiffre}+.{chiffre}+ { 
     afficher_erreur("Syntaxe invalide", yytext, "Un flottant signe doit etre entre parentheses");
     nb_colonne += yyleng;
-    return ENTIER;
+    return ENTIERERROR;
 }
 
 {flottant}   { printf("float non signe %s\n", yytext);nb_colonne += yyleng; return FLOAT; }
 
 {flottant_signe} { printf("float signe %s\n", yytext);nb_colonne += yyleng; return FLOAT;  }
  
-{lettre}    { printf("Lettre: %s\n", yytext);nb_colonne += yyleng; return LETTRE }
+{lettre}    { printf("Lettre: %s\n", yytext);nb_colonne += yyleng; return IDF; }
 
 "if"|"then"|"else"|"do"|"while"|"for"|"from"|"to"|"step" { printf("Mot-cle : %s\n", yytext); nb_colonne += yyleng;}
 
@@ -97,6 +95,7 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
                 else 
                      printf("Identificateur valide : %s\n", yytext); 
                 nb_colonne += yyleng;
+                return IDF;
             }  
 {ERREUR_NUM_IDENT}  { afficher_erreur("Identificateur invalide", yytext, "Un IDF ne peut pas commencer par un chiffre"); 
                       nb_colonne += yyleng;
@@ -131,10 +130,10 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 
 ";"   { printf("Point virgule\n");nb_colonne += yyleng; return PVG; }
 ":"   { printf("Deux points\n"); nb_colonne += yyleng; return DEUXPOINT; }
-","   { printf("Virgule\n");nb_colonne += yyleng;  return VRG; }
+","   { printf("Virgule\n");nb_colonne += yyleng; return VRG; }
 "\'"  { printf("Guillemets\n");nb_colonne += yyleng; return GUILLEMET; }
 "="   { printf("Egal\n"); nb_colonne += yyleng; return EGAL; }
-":="  { printf("Affectation\n"); nb_colonne += yyleng; return AFFECTATION }
+":="  { printf("Affectation\n"); nb_colonne += yyleng; return AFFECTATION ;}
 
 [ \t]+      {nb_colonne += yyleng;}
 \n          { nb_ligne++,nb_colonne = 1; }
@@ -143,10 +142,4 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
             }
 
 %%
-
-int main() {
-    yylex();
-    return 0;
-}
-
 

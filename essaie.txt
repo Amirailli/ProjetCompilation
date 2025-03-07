@@ -1,0 +1,35 @@
+MainPrgm test;
+Var
+    let x, y: Int;
+    @define Const pi: Float = 3,14;
+BeginPg
+    <!- Ceci est un commentaire -!>
+    {-- Ceci est un commentaire multi-lignes --}
+EndPg;
+input(bchfd)
+ <!- Ceci est un commentaire -!>
+output(ncxgd)
+Int
+!
+x=(+567.45);
+x=5
+while
+_dffgg
+AND
+< 
+or
+OR
+a-n = 3  ?
+5.02
+(-4.78)
++6.67
+(-5)
++5
+2345
+32768
+amir23_t
+23art
+ahf_
+aer__tt
+
+end
