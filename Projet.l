@@ -1,10 +1,19 @@
 %{
+<<<<<<< HEAD
     #include "Projet.tab.h"
+=======
+>>>>>>> 853ce8f63808146c6311e9d11268c49a0030d49f
     extern int nb_ligne ;
     extern int  nb_colonne ;
     #include <stdio.h>
     #include <stdlib.h>  // Pour strtol()
+<<<<<<< HEAD
     extern YYSTYPE yylval; 
+=======
+    int nb_ligne = 1;
+    int nb_colonne = 1;
+  
+>>>>>>> 853ce8f63808146c6311e9d11268c49a0030d49f
 
     void afficher_erreur(const char *type, const char *entite, const char *message) {
         printf("ERREUR : %s a la ligne %d, colonne %d : %s (%s)\n", 
