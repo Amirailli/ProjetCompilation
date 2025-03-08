@@ -63,7 +63,7 @@ liste_IDF:
 
 type:
     INT
-    | FLOAT
+    | TYPEFLOAT
 ;
 
 declaration_tableau:

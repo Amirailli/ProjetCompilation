@@ -1,7 +1,7 @@
 MainPrgm test;
 Var
     let x,y: Int;
-    @define Const pi: Int = 3 ;
+    @define Const pi: Float = 3.14 ;
 BeginPg
 {
     2.12;
