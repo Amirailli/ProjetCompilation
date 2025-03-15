@@ -22,13 +22,13 @@
 %%
 
 // Règles de la grammaire
-programme : MAINPRGM IDF ';' declarations bloc ENDPG ';'
+programme : MAINPRGM IDF PVG declarations bloc ENDPG PVG
            {
                printf("Programme valide.\n");
            }
            ;
 
-declarations : VAR declaration_list
+declarations : VAR  BEGINPG  declaration_list
              |
              ;
 
@@ -36,8 +36,8 @@ declaration_list : declaration_list declaration
                  | declaration
                  ;
 
-declaration : LET IDF ':' type ';'
-            | ATDEF CONST IDF ':' type '=' valeur ';'
+declaration : LET IDF  DEUXPOINT type PVG
+            | ATDEF CONST IDF DEUXPOINT type EGAL valeur PVG
             ;
 
 type : INT
@@ -55,27 +55,27 @@ instructions : instructions instruction
              | instruction
              ;
 
-instruction : affectation ';'
+instruction : affectation PVG
             | condition
             | boucle
-            | input ';'
-            | output ';'
+            | input PVG
+            | output PVG
             ;
 
 affectation : IDF AFFECTATION expression
             ;
 
-condition : IF '(' expression ')' THEN OUVEREBLOC instructions FERMETBLOC ELSE OUVEREBLOC instructions FERMETBLOC
+condition : IF PARENTHESEOUVERT expression PARENTHESEFERME THEN OUVEREBLOC instructions FERMETBLOC ELSE OUVEREBLOC instructions FERMETBLOC
            ;
 
-boucle : DO OUVEREBLOC instructions FERMETBLOC WHILE '(' expression ')' ';'
+boucle : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT expression PARENTHESEFERME PVG
        | FOR IDF FROM ENTIER TO ENTIER STEP ENTIER OUVEREBLOC instructions FERMETBLOC
        ;
 
-input : INPUT '(' IDF ')'
+input : INPUT PARENTHESEOUVERT IDF PARENTHESEFERME
       ;
 
-output : OUTPUT '(' expression ')'
+output : OUTPUT PARENTHESEOUVERT expression PARENTHESEFERME
         ;
 
 expression : expression PLUS terme
@@ -91,7 +91,7 @@ terme : terme TIMES facteur
 facteur : ENTIER
         | FLOAT
         | IDF
-        | '(' expression ')'
+        | PARENTHESEOUVERT expression PARENTHESEFERME
         ;
 
 %%

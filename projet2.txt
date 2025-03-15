@@ -1,11 +1,9 @@
 MainPrgm test;
 Var
-    let x, y: Int;
-    @define Const pi: Float = 3.14;
-BeginPg
+   BeginPg
     <!- Ceci est un commentaire -!>
     {-- Ceci est un commentaire multi-lignes --}
-    input(bchfd);
+    input(bchfd)
     <!- Ceci est un commentaire -!>
-    output(ncxgd);
+    output(ncxgd)
 EndPg;

@@ -80,7 +80,16 @@
      GUILLEMET = 296,
      EGAL = 297,
      AFFECTATION = 298,
-     ERREUR = 299
+     ERREUR = 299,
+     IF = 300,
+     THEN = 301,
+     ELSE = 302,
+     DO = 303,
+     WHILE = 304,
+     FOR = 305,
+     FROM = 306,
+     TO = 307,
+     STEP = 308
    };
 #endif
 

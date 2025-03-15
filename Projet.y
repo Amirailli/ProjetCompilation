@@ -23,6 +23,8 @@
 %token PVG  DEUXPOINT VRG GUILLEMET EGAL AFFECTATION
 %token ERREUR
 
+%token IF THEN ELSE DO WHILE FOR FROM TO STEP
+
 /* Définition des priorités et associativités */
 %left OR
 %left AND
@@ -34,7 +36,7 @@
 %%
 
 Program:
-    MAINPRGM IDF PVG declaration_part BEGINPG OUVEREBLOC instruction_part FERMETBLOC ENDPG PVG
+    MAINPRGM IDF PVG declaration_part BEGINPG OUVEREBLOC instructions FERMETBLOC ENDPG PVG
 ;
 
 declaration_part:
@@ -80,36 +82,51 @@ valeur_const:
     | ENTIERSIGNE
 ;
 
-instruction_part:
-    instruction
-    | instruction_part instruction
-;
+instructions : instructions instruction
+             | instruction
+             ;
 
-instruction:
-    expression PVG
-;
+instruction : affectation PVG
+            | condition
+            | boucle
+            | input PVG
+            | output PVG
+            ;
 
-/* Définition des expressions */
-expression:
-    expression PLUS expression
-    | expression MINUS expression
-    | expression TIMES expression
-    | expression DIV expression
-    | expression AND expression
-    | expression OR expression
-    | NOT expression
-    | expression EQ expression
-    | expression NEQ expression
-    | expression IE expression
-    | expression SE expression
-    | expression I expression
-    | expression S expression
-    | PARENTHESEOUVERT expression PARENTHESEFERME
-    | IDF
-    | ENTIER
-    | FLOAT
-    | ENTIERSIGNE
-;
+affectation : IDF AFFECTATION expression
+            ;
+
+condition : IF PARENTHESEOUVERT expression PARENTHESEFERME THEN OUVEREBLOC instructions FERMETBLOC ELSE OUVEREBLOC instructions FERMETBLOC
+           ;
+
+boucle : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT expression PARENTHESEFERME PVG
+       | FOR IDF FROM ENTIER TO ENTIER STEP ENTIER OUVEREBLOC instructions FERMETBLOC
+       ;
+
+input : INPUT PARENTHESEOUVERT IDF PARENTHESEFERME
+      ;
+
+output : OUTPUT PARENTHESEOUVERT expression PARENTHESEFERME
+        ;
+
+expression : expression PLUS terme
+           | expression MINUS terme
+           | terme
+           ;
+
+terme : terme TIMES facteur
+      | terme DIV facteur
+      | facteur
+      ;
+
+facteur : ENTIER
+        | FLOAT
+        | IDF
+        | PARENTHESEOUVERT expression PARENTHESEFERME
+     ;
+
+
+
 
 %%
 
