@@ -3,7 +3,7 @@ Var
     let x,y: Int;
     let x: Float;
     @define Const pi: Float = 3.14 ;
-    @define Const pi: Int = 40014 ;
+    @define Const pi: Int = 400 ;
 BeginPg
 {
    input(fgg);

@@ -42,15 +42,17 @@ ERREUR_UNDERS_IDENT _({lettre}|{chiffre}|_)*
 "Float"     { printf("Type Float detecte : %s\n", yytext); insererM(yytext, "TYPEFLOAT");yylval.str=strdup(yytext); nb_colonne += yyleng; return TYPEFLOAT; }
 
 {chiffre}+  { 
-                yylval.entier = atoi(yytext); 
-                if (yylval.entier < -32768 || yylval.entier > 32767) 
-                    afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
-                else 
-                   printf("Entier : %s\n", yytext);
-                   insererTS(yytext, "ENTIER");
-                nb_colonne += yyleng;
-                return ENTIER;
-            }
+              yylval.entier = atoi(yytext); 
+              if (yylval.entier < -32768 || yylval.entier > 32767) {
+                  afficher_erreur("Valeur entiere hors limite", yytext, "Nombre trop grand ou trop petit");
+                  return ENTIERERROR;
+              } else {
+                 printf("Entier : %s\n", yytext);
+                 insererTS(yytext, "ENTIER");
+              }
+              nb_colonne += yyleng;
+              return ENTIER;
+          }
 
 {entier_signe} { 
                     yylval.entier = atoi(yytext);

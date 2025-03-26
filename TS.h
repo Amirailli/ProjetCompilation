@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #define TAILLE_INITIALE 10
+#pragma once
+
 // Déclaration de la TS
 typedef struct {
     char NomEntite[20];
@@ -27,38 +29,53 @@ int CpS = 0;
 
 // Fonction d'initialisation dynamique
 void dynamicInit() {
+    ts = NULL;
+    tabM = NULL;
+    tabS = NULL;
+
     ts = (TypeTS*)malloc(capaciteTS * sizeof(TypeTS));
     tabM = (TypeSM*)malloc(capaciteM * sizeof(TypeSM));
     tabS = (TypeSM*)malloc(capaciteS * sizeof(TypeSM));
+
+    if (ts == NULL || tabM == NULL || tabS == NULL) {
+        printf("Erreur : allocation mémoire échouée\n");
+        exit(EXIT_FAILURE);
+    }
 }
+
 // Fonction d'agrandissement de la TS
 void agrandirTS() {
-    capaciteTS *= 2;
-    ts = (TypeTS*)realloc(ts, capaciteTS * sizeof(TypeTS));
-    if (ts == NULL) {
+    TypeTS* temp = (TypeTS*)realloc(ts, capaciteTS * 2 * sizeof(TypeTS));
+    if (temp == NULL) {
         printf("Erreur lors de l'agrandissement de la TS\n");
         exit(EXIT_FAILURE);
     }
+    ts = temp;
+    capaciteTS *= 2;
 }
+
 
 // Fonction d'agrandissement de tabM
 void agrandirM() {
-    capaciteM *= 2;
-    tabM = (TypeSM*)realloc(tabM, capaciteM * sizeof(TypeSM));
-    if (tabM == NULL) {
+    TypeSM* temp = (TypeSM*)realloc(tabM, capaciteM * 2 * sizeof(TypeSM));
+    if (temp == NULL) {
         printf("Erreur lors de l'agrandissement de tabM\n");
         exit(EXIT_FAILURE);
     }
+    tabM= temp;
+    capaciteM *= 2;
 }
+
 
 // Fonction d'agrandissement de tabS
 void agrandirS() {
-    capaciteS *= 2;
-    tabS = (TypeSM*)realloc(tabS, capaciteS * sizeof(TypeSM));
-    if (tabS == NULL) {
-        printf("Erreur lors de l'agrandissement de tabS\n");
+    TypeSM* temp = (TypeSM*)realloc(tabS, capaciteS * 2 * sizeof(TypeSM));
+    if (temp == NULL) {
+        printf("Erreur lors de l'agrandissement de la TS\n");
         exit(EXIT_FAILURE);
     }
+    tabS = temp;
+    capaciteS*= 2;
 }
 
 // Fonction de recherche dans la TS
@@ -92,17 +109,29 @@ int rechercheS(char entite[]) {
 }
 
 void insererTS(char entite[], char code[]) {
-    if (rechercheTS(entite) == -1) {
-        if (CpTS >= capaciteTS) {  // Vérifie la capacité avant insertion
+    if (rechercheTS(entite) == -1) { 
+        if (CpTS >= capaciteTS) {  
             agrandirTS();
         }
-        // Vérifie la place après l'agrandissement
-        strcpy(ts[CpTS].NomEntite, entite);
-        strcpy(ts[CpTS].CodeEntite, code);
-        strcpy(ts[CpTS].TypeEntite, "");
-        CpTS++;   
-    }else{
-        printf(" ERREUR : Entite deja existante dans la TS\n");
+
+        // Vérifie encore si l'agrandissement a réussi avant d'insérer
+        if (CpTS < capaciteTS) {
+            // Copie sécurisée avec strncpy pour éviter les dépassements
+            strncpy(ts[CpTS].NomEntite, entite, 19);
+            ts[CpTS].NomEntite[19] = '\0';  // Assurer la terminaison
+
+            strncpy(ts[CpTS].CodeEntite, code, 19);
+            ts[CpTS].CodeEntite[19] = '\0';
+
+            strncpy(ts[CpTS].TypeEntite, "", 19);
+            ts[CpTS].TypeEntite[19] = '\0';
+
+            CpTS++;
+        } else {
+            printf("ERREUR : Impossible d'insérer l'entité, mémoire insuffisante\n");
+        }
+    } else {
+        printf("ERREUR : Entité '%s' déjà existante dans la Table des Symboles\n", entite);
     }
 }
 
@@ -145,18 +174,12 @@ void insererType(char entite[], char type[])
 }
 
 // Fonction RechercheType : retourne le type de l'entité
-int rechercheType(char entite[])
-{
+char* rechercheType(char entite[]) {
     int posEntite = rechercheTS(entite);
-    if (posEntite == -1) return -1; 
-
-    if (strcmp(ts[posEntite].TypeEntite, "") == 0) 
-        return 0; // L'entité n'est pas encore déclarée
-    else 
-        return 1; // L'entité est déclarée
+    if (posEntite == -1 || strcmp(ts[posEntite].TypeEntite, "") == 0) 
+        return NULL;  // Pas déclaré
+    return ts[posEntite].TypeEntite;  // Retourne le type
 }
-
-
 
 // Fonction d'affichage de la TS
 void afficherTS() {
@@ -199,10 +222,24 @@ void afficherS() {
       i++;
     }
 }
+
+void afficherCapacites() {
+    printf("\n--- Informations Mémoire ---\n");
+    printf("Capacité TS : %d, Utilisé : %d\n", capaciteTS, CpTS);
+    printf("Capacité Mots-clés : %d, Utilisé : %d\n", capaciteM, CpM);
+    printf("Capacité Séparateurs : %d, Utilisé : %d\n", capaciteS, CpS);
+}
+
+
 void libererMemoire() {
     free(ts);
     free(tabM);
     free(tabS);
+    ts = NULL;
+    tabM = NULL;
+    tabS = NULL;
 }
+
+
 
 
