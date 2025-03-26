@@ -1,9 +1,0 @@
-MainPrgm test;
-Var
-   BeginPg
-    <!- Ceci est un commentaire -!>
-    {-- Ceci est un commentaire multi-lignes --}
-    input(bchfd)
-    <!- Ceci est un commentaire -!>
-    output(ncxgd)
-EndPg;

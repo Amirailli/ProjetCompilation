@@ -48,55 +48,69 @@
      CONST = 264,
      INPUT = 265,
      OUTPUT = 266,
-     INT = 267,
+     TYPEINT = 267,
      TYPEFLOAT = 268,
      ENTIER = 269,
-     FLOAT = 270,
-     IDF = 271,
-     ENTIERSIGNE = 272,
-     ENTIERERROR = 273,
-     PLUS = 274,
-     MINUS = 275,
-     TIMES = 276,
-     DIV = 277,
-     AND = 278,
-     OR = 279,
-     NOT = 280,
-     EQ = 281,
-     NEQ = 282,
-     IE = 283,
-     SE = 284,
-     I = 285,
-     S = 286,
-     OUVEREBLOC = 287,
-     FERMETBLOC = 288,
-     CROCHETOUVERT = 289,
-     CROCHETFERME = 290,
-     PARENTHESEOUVERT = 291,
-     PARENTHESEFERME = 292,
-     PVG = 293,
-     DEUXPOINT = 294,
-     VRG = 295,
-     GUILLEMET = 296,
-     EGAL = 297,
-     AFFECTATION = 298,
-     ERREUR = 299,
-     IF = 300,
-     THEN = 301,
-     ELSE = 302,
-     DO = 303,
-     WHILE = 304,
-     FOR = 305,
-     FROM = 306,
-     TO = 307,
-     STEP = 308
+     ENTIERSIGNE = 270,
+     FLOAT = 271,
+     ENTIERERROR = 272,
+     IDF = 273,
+     lettre = 274,
+     PLUS = 275,
+     MINUS = 276,
+     TIMES = 277,
+     DIV = 278,
+     AND = 279,
+     OR = 280,
+     NOT = 281,
+     EQ = 282,
+     NEQ = 283,
+     IE = 284,
+     SE = 285,
+     I = 286,
+     S = 287,
+     OUVEREBLOC = 288,
+     FERMETBLOC = 289,
+     CROCHETOUVERT = 290,
+     CROCHETFERME = 291,
+     PARENTHESEOUVERT = 292,
+     PARENTHESEFERME = 293,
+     PVG = 294,
+     DEUXPOINT = 295,
+     VRG = 296,
+     GUILLEMET = 297,
+     EGAL = 298,
+     AFFECTATION = 299,
+     ERREUR = 300,
+     IF = 301,
+     THEN = 302,
+     ELSE = 303,
+     DO = 304,
+     WHILE = 305,
+     FOR = 306,
+     FROM = 307,
+     TO = 308,
+     STEP = 309
    };
 #endif
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+typedef union YYSTYPE
+{
+
+/* Line 1676 of yacc.c  */
+#line 10 "Projet.y"
+
+int entier;
+char* str;
+
+
+
+/* Line 1676 of yacc.c  */
+#line 113 "Projet.tab.h"
+} YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

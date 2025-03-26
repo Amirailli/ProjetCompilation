@@ -2,13 +2,21 @@
     #include <stdio.h>
     int nb_ligne = 1;
     int nb_colonne = 1;
+    char SauvType[20];
 %}
 
 %start Program
 
-%token MAINPRGM VAR BEGINPG ENDPG LET ATDEF CONST INPUT OUTPUT
-%token INT TYPEFLOAT ENTIER FLOAT IDF ENTIERSIGNE ENTIERERROR
+%union {
+int entier;
+char* str;
+}
 
+%token MAINPRGM VAR BEGINPG ENDPG LET ATDEF CONST INPUT OUTPUT
+%token <str> TYPEINT TYPEFLOAT 
+%token <entier> ENTIER ENTIERSIGNE
+%token FLOAT ENTIERERROR
+%token <str> IDF lettre
 /* Opérateurs arithmétiques */
 %token PLUS MINUS TIMES DIV 
 
@@ -55,25 +63,44 @@ declaration:
 ;
 
 declaration_variables:
-    LET liste_IDF DEUXPOINT type PVG
+    LET liste_let DEUXPOINT type PVG
 ;
 
-liste_IDF:
-    IDF
-    | liste_IDF VRG IDF
+liste_let:
+    liste_let VRG lettre  { 
+                            if(rechercheType($3)==0) {
+                                insererType($3,SauvType);
+                            } else {
+                                printf("Erreur Semantique: double declaration de %s, a la ligne %d\n", $3, nb_ligne);
+                            } 
+                       }
+    |lettre  {      
+                if (rechercheType($1)==0){
+                    insererType($1,SauvType);
+                } else {
+                    printf("Erreur Semantique: double declaration de %s, a la ligne %d\n", $1, nb_ligne);
+                }
+         }
+   ;
 ;
 
 type:
-    INT
-    | TYPEFLOAT
+    TYPEINT {strcpy(SauvType,"INT");}
+    | TYPEFLOAT {strcpy(SauvType,"FLOAT");}
 ;
 
 declaration_tableau:
-    LET liste_IDF  DEUXPOINT CROCHETOUVERT ENTIER CROCHETFERME DEUXPOINT type PVG
+    LET liste_let  DEUXPOINT CROCHETOUVERT ENTIER CROCHETFERME DEUXPOINT type PVG
 ;
 
 declaration_constantes:
-    ATDEF CONST IDF DEUXPOINT type EGAL valeur_const PVG
+    ATDEF CONST IDF DEUXPOINT type EGAL valeur_const PVG {
+        if (rechercheType($3) == 0) {
+            insererType($3, SauvType); 
+        } else {
+            printf("Erreur Semantique: double declaration de la constante %s, a la ligne %d\n", $3, nb_ligne);
+        }
+    }
 ;
 
 valeur_const:
@@ -125,13 +152,18 @@ facteur : ENTIER
         | PARENTHESEOUVERT expression PARENTHESEFERME
      ;
 
-
-
-
 %%
 
 int main() {
-    return yyparse();
+    dynamicInit();
+
+    yyparse();
+
+    afficherTS();         // Affiche les résultats une fois l'analyse terminée
+    afficherM();
+    afficherS();
+
+    libererMemoire();
 }
 
 int yyerror(char *msg) {

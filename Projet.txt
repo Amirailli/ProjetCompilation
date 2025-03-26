@@ -1,11 +1,11 @@
-MainPrgm test;
+MainPrgm Test;
 Var
     let x,y: Int;
+    let x: Float;
     @define Const pi: Float = 3.14 ;
+    @define Const pi: Int = 40014 ;
 BeginPg
 {
-    2.12;
-    a<2;
-    b<3;
+   input(fgg);
 }
 EndPg;
