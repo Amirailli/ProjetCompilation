@@ -16,7 +16,7 @@ char* str;
 %token <str> TYPEINT TYPEFLOAT 
 %token <entier> ENTIER ENTIERSIGNE
 %token FLOAT ENTIERERROR
-%token <str> IDF lettre
+%token <str> IDF 
 /* Opérateurs arithmétiques */
 %token PLUS MINUS TIMES DIV 
 
@@ -32,7 +32,7 @@ char* str;
 %token ERREUR
 
 %token IF THEN ELSE DO WHILE FOR FROM TO STEP
-
+%token CHAINE VAR_IDF
 /* Définition des priorités et associativités */
 %left OR
 %left AND
@@ -63,18 +63,18 @@ declaration:
 ;
 
 declaration_variables:
-    LET liste_let DEUXPOINT type PVG
+    LET liste_idf DEUXPOINT type PVG
 ;
 
-liste_let:
-    liste_let VRG lettre  { 
+liste_idf:
+    liste_idf VRG IDF  { 
                             if(rechercheType($3)==0) {
                                 insererType($3,SauvType);
                             } else {
                                 printf("Erreur Semantique: double declaration de %s, a la ligne %d\n", $3, nb_ligne);
                             } 
                        }
-    |lettre  {      
+    |IDF  {      
                 if (rechercheType($1)==0){
                     insererType($1,SauvType);
                 } else {
@@ -84,13 +84,15 @@ liste_let:
    ;
 ;
 
+
+
 type:
     TYPEINT {strcpy(SauvType,"INT");}
     | TYPEFLOAT {strcpy(SauvType,"FLOAT");}
 ;
 
 declaration_tableau:
-    LET liste_let  DEUXPOINT CROCHETOUVERT ENTIER CROCHETFERME DEUXPOINT type PVG
+    LET liste_idf  DEUXPOINT CROCHETOUVERT ENTIER CROCHETFERME DEUXPOINT type PVG
 ;
 
 declaration_constantes:
@@ -121,36 +123,65 @@ instruction : affectation PVG
             ;
 
 affectation : IDF AFFECTATION expression
+            | IDF CROCHETOUVERT expression CROCHETFERME AFFECTATION expression
             ;
 
-condition : IF PARENTHESEOUVERT expression PARENTHESEFERME THEN OUVEREBLOC instructions FERMETBLOC ELSE OUVEREBLOC instructions FERMETBLOC
-           ;
+condition : IF PARENTHESEOUVERT expression_logique PARENTHESEFERME THEN
+            OUVEREBLOC instructions FERMETBLOC 
+            | IF PARENTHESEOUVERT expression_logique PARENTHESEFERME THEN 
+            OUVEREBLOC instructions FERMETBLOC ELSE OUVEREBLOC instructions FERMETBLOC
+            ;
+expression_logique : expression comparaison expression
+                   | expression_logique AND expression_logique
+                   | expression_logique OR expression_logique
+                   | NOT expression_logique
+                   | PARENTHESEOUVERT expression_logique PARENTHESEFERME
+                   | expression  // Permet d'accepter directement un booléen (0 ou 1)
+                   ;
 
-boucle : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT expression PARENTHESEFERME PVG
-       | FOR IDF FROM ENTIER TO ENTIER STEP ENTIER OUVEREBLOC instructions FERMETBLOC
+comparaison : EQ 
+            | NEQ
+            | IE
+            | SE
+            | I
+            | S
+            ;
+
+boucle : boucle_do
+       | boucle_for
        ;
 
-input : INPUT PARENTHESEOUVERT IDF PARENTHESEFERME
+boucle_do : DO OUVEREBLOC instructions FERMETBLOC WHILE PARENTHESEOUVERT expression comparaison expression PARENTHESEFERME PVG
+          ;
+
+boucle_for : FOR IDF FROM expression TO expression STEP expression 
+            OUVEREBLOC instructions FERMETBLOC
+          ;
+
+
+input : INPUT PARENTHESEOUVERT VAR_IDF PARENTHESEFERME
       ;
 
-output : OUTPUT PARENTHESEOUVERT expression PARENTHESEFERME
+output : OUTPUT PARENTHESEOUVERT contenu PARENTHESEFERME
+       ;
+
+contenu : CHAINE
+        | VAR_IDF
+        | IDF
+        | CHAINE VRG VAR_IDF
+        | CHAINE VRG IDF
         ;
 
-expression : expression PLUS terme
-           | expression MINUS terme
-           | terme
+expression : expression PLUS expression
+           | expression MINUS expression
+           | expression TIMES expression
+           | expression DIV expression
+           | PARENTHESEOUVERT expression PARENTHESEFERME
+           | IDF
+           | ENTIERSIGNE
+           | FLOAT
+           | ENTIER
            ;
-
-terme : terme TIMES facteur
-      | terme DIV facteur
-      | facteur
-      ;
-
-facteur : ENTIER
-        | FLOAT
-        | IDF
-        | PARENTHESEOUVERT expression PARENTHESEFERME
-     ;
 
 %%
 

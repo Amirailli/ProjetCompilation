@@ -101,10 +101,9 @@ void insererTS(char entite[], char code[]) {
         strcpy(ts[CpTS].CodeEntite, code);
         strcpy(ts[CpTS].TypeEntite, "");
         CpTS++;   
-    }else{
-        printf(" ERREUR : Entite deja existante dans la TS\n");
     }
 }
+
 
 
 // Fonction d'insertion dans tabM (Mots-clés)
@@ -204,5 +203,4 @@ void libererMemoire() {
     free(tabM);
     free(tabS);
 }
-
 
