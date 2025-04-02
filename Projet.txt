@@ -1,20 +1,29 @@
 MainPrgm Test;
 Var
-    let A : Int;
-    let x,y: Int;
-    let x: Float;
+    let A ,L,S ,x,y: Int;
+    let x ,N,M: Float;
     @define Const pi: Float = 3.14 ;
     @define Const pi: Int = 40014 ;
 BeginPg
 {
+
+     M := 35 / 0 ;
+     p := 15 ;
+     k := 36 ;
     for i from 1 to 5 step 1 {
     output("Valeur de i: ", i);
     for j from 1 to 3 step 1 {
         output("Valeur de j: ", j);
     }
     }
+     A := M / 0 ;
+     R := 66 ;
     input(UserName) ; 
     output("Vous avez saisi: ", UserName) ; 
+     N := 25 / 0 ;
+     L := A / 0 ;
+     S := 2.5 / 0 ;
+     A := 5 / 0;
     do { 
     x :=x + 1; 
     } while (x<100); 
