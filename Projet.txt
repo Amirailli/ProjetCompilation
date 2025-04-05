@@ -6,7 +6,7 @@ Var
     @define Const pi: Int = 40014 ;
 BeginPg
 {
-
+     X := 3+y ;
      M := 35 / 0 ;
      p := 15 ;
      k := 36 ;

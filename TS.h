@@ -165,38 +165,6 @@ float obtenirValeurFloat(char* idf) {
     }
 }
 
-void assignerValeurInt(char* idf, int valeur) {
-    int pos = rechercheTS(idf);
-    if (pos != -1) {
-        if (strcmp(ts[pos].TypeEntite, "int") == 0) {
-            ts[pos].valeur.valeurInt = valeur;
-            ts[pos].estInitialise = 1;
-        } else {
-            printf("Erreur : la variable '%s' n'est pas de type entier.\n", idf);
-            exit(EXIT_FAILURE);
-        }
-    } else {
-        printf("Erreur : variable '%s' non déclarée.\n", idf);
-        exit(EXIT_FAILURE);
-    }
-}
-
-void assignerValeurFloat(char* idf, float valeur) {
-    int pos = rechercheTS(idf);
-    if (pos != -1) {
-        if (strcmp(ts[pos].TypeEntite, "float") == 0) {
-            ts[pos].valeur.valeurFloat = valeur;
-            ts[pos].estInitialise = 1;
-        } else {
-            printf("Erreur : la variable '%s' n'est pas de type flottant.\n", idf);
-            exit(EXIT_FAILURE);
-        }
-    } else {
-        printf("Erreur : variable '%s' non déclarée.\n", idf);
-        exit(EXIT_FAILURE);
-    }
-}
-
 
 void insererTS(char entite[], char code[]) {
     if (rechercheTS(entite) == -1) {
